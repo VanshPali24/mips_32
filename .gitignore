@@ -1,0 +1,38 @@
+# =========================
+# Quartus Prime Generated Files
+# =========================
+
+# Database folders
+db/
+incremental_db/
+
+# Compilation outputs
+output_files/
+
+# Temporary/session files
+*.qws
+*.bak
+*.tmp
+
+# Reports/logs
+*.rpt
+*.summary
+*.smsg
+
+# Simulation generated files
+simulation/modelsim/
+simulation/qsim/
+
+# OS/editor files
+.DS_Store
+Thumbs.db
+
+# Optional: waveform/temp outputs
+*.wlf
+*.vcd
+*.vwf.bak
+
+# Optional: programmer outputs
+*.sof
+*.pof
+*.jic
