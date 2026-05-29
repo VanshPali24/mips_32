@@ -5,7 +5,7 @@ module regfile #(parameter WIDTH = 32)(
 	input 		[WIDTH-1:0] writeData,
 	input 	            regWrite,
 	input							clk,
-	output 		[WIDTH-1:0] readReg1, readReg2
+	output 	reg	[WIDTH-1:0] readReg1, readReg2
 	);
 	
 	//defining the registers
@@ -19,11 +19,16 @@ module regfile #(parameter WIDTH = 32)(
 		end
 	end
 	
-	assign readReg1 = (regSrc1 != 0) ? Reg[regSrc1] : 0;
-	assign readReg2 = (regSrc2 != 0) ? Reg[regSrc2] : 0;
-	
 	always @(posedge clk) begin
 		if(regWrite) Reg[wrRegNum] <= writeData;
+	end
+
+	always @(negedge clk) begin
+		if(regSrc1 != 0) readReg1 <= Reg[regSrc1];
+		else readReg1 <= 0;
+		
+		if(regSrc2 != 0) readReg2 <= Reg[regSrc2];
+		else readReg2 <= 0;
 	end
 	
 endmodule

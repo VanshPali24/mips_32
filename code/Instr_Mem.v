@@ -11,7 +11,7 @@ module instrMem #(parameter ADDR_WIDTH = 32, INSTR_SIZE = 32, MEM_SIZE = 64)(
 		for (i =0;i< MEM_SIZE-1;i=i+1) begin
 			instrMemory[i] = 0;
 		end
-		$readmemh("instrhazard_1.hex", instrMemory);
+		$readmemh("D:/MIPS_files/MIPS_hazard/code/instrhazard_2.hex", instrMemory);
 	end
 	
 	assign instr = instrMemory[addr[7:2]];

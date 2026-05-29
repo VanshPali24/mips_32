@@ -11,7 +11,6 @@ module datapath_pipe #(parameter WIDTH = 32)(
 	wire regDst, regWrite, aluSrc, memWrite, memtoReg, branch, zero, ID_EX_stall_flush, ID_EX_flush, EX_MEM_flush, memRead;
 	wire [4:0] WrReg;
 	wire [1:0] forwardA, forwardB;
-	wire forwardC, forwardD;
 	
 	reg [4:0] rsReg_IF_ID, rtReg_IF_ID, rdReg_IF_ID;
 	reg [15:0] Imm_IF_ID;
@@ -63,11 +62,9 @@ module datapath_pipe #(parameter WIDTH = 32)(
 	controller c(instr_IF_ID, regDst, regWrite, aluSrc, memWrite, memtoReg, branch, aluCtrl, memRead);
 		
 	// Register File
-	regfile  Registerfile(rsReg_IF_ID, rtReg_IF_ID, WrReg_MEM_WB, Result, regWrite_MEM_WB, clk, DataRead1, DataRead2);
+	regfile  Registerfile(rsReg_IF_ID, rtReg_IF_ID, WrReg_MEM_WB, Result, regWrite_MEM_WB, clk, ReadReg1, ReadReg2);
 	
-	mux2#(32) frwrdC(DataRead1 ,Result, forwardC, ReadReg1);
-	
-	mux2#(32) frwrdD(DataRead2 ,Result, forwardD, ReadReg2);
+
 	
 	// Extend block
 	extend   Extend_block(Imm_IF_ID, imm_extend);
@@ -131,7 +128,7 @@ module datapath_pipe #(parameter WIDTH = 32)(
 	
 	//Forwarding Unit
 	
-	frwrdUnit	FU(rsReg_ID_EX, rtReg_ID_EX, WrReg_EX_MEM, WrReg_MEM_WB, rsReg_IF_ID, rtReg_IF_ID, regWrite_MEM_WB, regWrite_EX_MEM, forwardA, forwardB, forwardC, forwardD);
+	frwrdUnit	FU(rsReg_ID_EX, rtReg_ID_EX, WrReg_EX_MEM, WrReg_MEM_WB, rsReg_IF_ID, rtReg_IF_ID, regWrite_MEM_WB, regWrite_EX_MEM, forwardA, forwardB);
 	
 	//Branch address
 	adder 		branchAdder(PCplus4_ID_EX, left_shift_Imm_extend_ID_EX, branchTarget);
