@@ -15,7 +15,6 @@ A hardware implementation of a 32-bit MIPS processor featuring a classic 5-stage
   - [Control Hazards — Branch Not Taken](#control-hazards--branch-not-taken)
 - [Pipeline Registers](#pipeline-registers)
 - [Supported Instructions](#supported-instructions)
-- [Project Structure](#project-structure)
 - [Getting Started](#getting-started)
 - [Simulation & Testing](#simulation--testing)
 - [Design Decisions](#design-decisions)
@@ -134,8 +133,8 @@ Stall if:  ID/EX.MemRead = 1
 
 **Example:**
 ```mips
-lw   $t0, 0($s1)    # MEM stage reads data
-add  $t2, $t0, $t3  # needs $t0 → stall inserted here
+lw   $t9, 88($t0)    # MEM stage reads data
+add  $t17, $t7, $t9  # needs $t9 → stall inserted here
 ```
 
 ---
@@ -198,13 +197,9 @@ Target:               ---   [IF]   [ID]  ...
 - Quartus Prime Altera (Lite Version)
 - ModelSim (for simulation)
 
-### Build & Simulate
-
-
-
 ### Loading a Custom Program
 
---to be added
+- Make a .hex file containing one instruction per line, in the corresponding 32 bit format of instructions
 
 ## Simulation & Testing
 
@@ -220,9 +215,50 @@ The testbench suite covers the following scenarios:
 | Branch taken + flush | Branch evaluates true; incorrectly fetched instruction is squashed |
 | Combined hazards | Interleaved loads, branches, and ALU ops |
 
-Run individual testbenches:
+- All the 32 registers in Register File are initialized as follows:
+```mips
+integer i;
+initial begin
+	for (i = 0; i < 32; i = i + 1) begin
+		Reg[i] = i;
+	end
+end
+```
+Three test cases are already added for testing which covers various functionalities. Below are the instruction sets:
+  
+**instr_hazard1:**
+```mips
+add  $t2, $t3, $t5    
+sub  $t1, $t2, $t4
+or   $t29, $t2, $t8
+and  $t30, $t6, $t29
+add  $t20, $t9, $t29
+add  $t20, $t20, $t19
+add  $t20, $t20, $t18
+add  $t20, $t20, $t17
+```
+**instr_hazard2:**
+```mips
+sw  $t5, 80($t8)
+add $t6, $t3, $t2
+sub $t7, $t6, $t1
+lw $t9, 88($t0)
+add $t17, $t7, $t9    
+```
 
---to be added
+**instr_hazard3:**
+```mips
+beq $t1, $t1, 2
+sub $t5, $t7, $t6
+add $t2, $t3, $t4
+slt $t8, $t10, $t9
+or $t12, $t13, $t14
+```
+
+Run individual testbenches:
+- Pre-made test testbenches corresponding to the test cases described above are present in the test folder, named as testPipe1, testPipe2 and testPipe3. These contain general reset stimuli and monitor functions to observe textual results in the terminal while simulation. Users may modify the displayed items by providing proper path of the component to be  monitored.
+- From the Settings -> Simulation option in Quartus, select the created/ pre built test benches from the drop down menu and Apply.
+- Also make sure to change the name/path of the corresponding .hex file in the InstrMem.v file, in the $readmemh command.
 
 ## Design Decisions
 
